@@ -38,6 +38,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    ok: true, 
+    msg: 'server is running'
+  });
+});
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   // Serve frontend build files
@@ -51,14 +58,17 @@ if (process.env.NODE_ENV === 'production') {
 
 const port = process.env.PORT || 5000;
 
-mongoose
-  .connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mern_intern')
+// Connect to MongoDB with better error handling
+mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mern_intern')
   .then(() => {
     console.log('MongoDB connected successfully');
-    app.listen(port, () => {
-      console.log('Server running on port ' + port);
-    });
   })
   .catch((error) => {
     console.error('Database connection error:', error.message);
+    console.log('Server will still run but database features will be limited');
   });
+
+// Start server regardless of DB connection
+app.listen(port, () => {
+  console.log('Server running on port ' + port);
+});

@@ -19,24 +19,50 @@ export default function Login() {
     
     setIsLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { 
+      const apiUrl = import.meta.env.VITE_API_URL;
+      console.log('Attempting login with API URL:', apiUrl);
+      
+      const response = await axios.post(`${apiUrl}/api/auth/login`, { 
         email, 
         password 
       });
+      
+      console.log('Login response:', response.data);
+      
       if (response.data && response.data.token) {
         localStorage.setItem('token', response.data.token);
+        if (response.data.user) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
         navigate('/dashboard');
       } else {
         alert('Invalid response from server');
       }
     } catch (err) {
+      console.error('Login error:', err);
+      console.error('Error response:', err.response);
+      console.error('Error request:', err.request);
+      console.error('Error config:', err.config);
+      
+      let errorMessage = 'Login failed. Please check your credentials.';
+      
       if (err.response) {
-        alert(err.response.data?.msg || 'Login failed. Please check your credentials.');
+        // Server responded with error status
+        errorMessage = err.response.data?.msg || `Server error: ${err.response.status}`;
+        console.error('Server error status:', err.response.status);
+        console.error('Server error data:', err.response.data);
       } else if (err.request) {
-        alert('Cannot connect to server. Please make sure the backend is running on port 5000.');
+        // Request was made but no response received
+        errorMessage = 'Cannot connect to server. Please make sure the backend is running on port 5001.';
+        console.error('No response received from server');
+        console.error('Request details:', err.request);
       } else {
-        alert('An error occurred. Please try again.');
+        // Something else happened
+        errorMessage = err.message || 'An unexpected error occurred.';
+        console.error('Request setup error:', err.message);
       }
+      
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +101,9 @@ export default function Login() {
       </form>
       <p className="login-link">
         Don't have an account? <Link to="/register">Sign up here</Link>
+      </p>
+      <p className="login-link" style={{ fontSize: '12px', marginTop: '10px' }}>
+        <Link to="/api-test">Debug API Connection</Link>
       </p>
     </div>
   );

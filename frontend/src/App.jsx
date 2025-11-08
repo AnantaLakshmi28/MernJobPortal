@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ApiTest from './pages/ApiTest';
 
 function checkAuth() {
   const token = localStorage.getItem('token');
@@ -14,6 +15,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/api-test" element={<ApiTest />} />
       <Route
         path="/dashboard/*"
         element={checkAuth() ? <Dashboard /> : <Navigate to="/login" />}

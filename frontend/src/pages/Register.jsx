@@ -32,11 +32,27 @@ export default function Register() {
     
     setIsLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, formData);
+      const apiUrl = import.meta.env.VITE_API_URL;
+      console.log('Attempting registration with API URL:', apiUrl);
+      console.log('Registration data:', formData);
+      
+      const response = await axios.post(`${apiUrl}/api/auth/register`, formData);
+      console.log('Registration response:', response.data);
+      
       alert('Registration successful! Please login.');
       navigate('/login');
     } catch (err) {
-      alert(err.response?.data?.msg || 'Registration failed');
+      console.error('Registration error:', err);
+      console.error('Error response:', err.response);
+      console.error('Error request:', err.request);
+      
+      if (err.response) {
+        alert(err.response.data?.msg || 'Registration failed');
+      } else if (err.request) {
+        alert('Cannot connect to server. Please make sure the backend is running.');
+      } else {
+        alert('Registration failed: ' + err.message);
+      }
     } finally {
       setIsLoading(false);
     }
