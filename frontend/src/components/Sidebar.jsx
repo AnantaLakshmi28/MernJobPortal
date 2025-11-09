@@ -9,7 +9,7 @@ export default function Sidebar({ onLogout }) {
       <Link className="link" to="/dashboard/post">Post Job</Link>
       <Link className="link" to="/dashboard/profile">Profile</Link>
       <Link className="link" to="/dashboard/analysis">Customer Analysis</Link>
-      <Link className="link" to="/login">Customer Analysis</Link>
+      <Link className="link" to="/login">Logout</Link>
     </div>
   );
 }
